@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -108,6 +111,34 @@ public class CategoriasRestController {
 
         // Lanzar excepción
         throw new NoSuchElementException("No se puede encontrar la Categoría con el identificador numérico " + id);
+    }
+
+    // Solicitudes POST
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Agrega un nuevo registro, si es válido, al repositorio
+     * 
+     * @param categoria objeto {@link Categoria} que contiene la información a
+     *                  agregar
+     * @param request   objeto {@link HttpServletRequest} que contiene la
+     *                  información de la solicitud que le envía el cliente al
+     *                  servlet
+     * @return un objeto {@link Categoría} con la respuesta a la solicitud
+     */
+    @PostMapping
+    public Categoria agregarRegistro(@RequestBody @Valid Categoria categoria, HttpServletRequest request) {
+        // Depuración
+        depurarSolicitud(request);
+
+        // Guardar registro en el repositorio
+        categoria = repositorio.save(categoria);
+
+        // Depuración
+        logger.info("[API] Nueva categoría: {}", categoria);
+
+        // Devolver objeto
+        return categoria;
     }
 
 }
