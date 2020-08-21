@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -22,7 +23,8 @@ public class Categoria {
      * Identificador numérico de la {@link Categoria}
      */
     @Id
-    @Column(name = Constantes.CATEGORIAS_ID, nullable = false, unique = true, updatable = false)
+    @GeneratedValue(generator = Constantes.SECUENCIA_CATEGORIAS)
+    @Column(name = Constantes.CATEGORIAS_ID, insertable = false, nullable = false, unique = true, updatable = false)
     private Long id;
 
     /**
