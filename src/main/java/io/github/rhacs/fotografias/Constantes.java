@@ -15,6 +15,15 @@ public class Constantes {
      */
     public static final String TABLA_CATEGORIAS = "categorias";
 
+    // Secuencias
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Nombre de la secuencia encargada de generar los valores para los
+     * identificadores numéricos de la tabla {@value #TABLA_CATEGORIAS}
+     */
+    public static final String SECUENCIA_CATEGORIAS = TABLA_CATEGORIAS + "_seq";
+
     // Columnas
     // -----------------------------------------------------------------------------------------
 
