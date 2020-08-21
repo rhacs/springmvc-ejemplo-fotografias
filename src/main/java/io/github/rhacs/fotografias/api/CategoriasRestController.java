@@ -187,24 +187,32 @@ public class CategoriasRestController {
 
         // Verificar que el identificador de la ruta sea igual al de la categoría
         if (categoria.getId().equals(id)) {
-            // Buscar categoría por nombre
-            Optional<Categoria> existente = repositorio.findByNombre(categoria.getNombre());
+            // Buscar información de la categoría por ID
+            Optional<Categoria> existente = repositorio.findById(id);
 
             // Verificar si existe
             if (existente.isPresent()) {
-                // Verificar que no se esté usando un nombre que ya existe
-                if (!existente.get().getId().equals(categoria.getId())) {
-                    // Depuración
-                    logger.warn("[API] Se intentó usar un nombre que ya existe ({}) al modificar una Categoría ({})",
-                            existente.get(), categoria);
+                // Buscar categoría por nombre
+                Optional<Categoria> porNombre = repositorio.findByNombre(categoria.getNombre());
 
-                    // Lanzar excepción
-                    throw new UniqueConstraintViolationException(String.format(
-                            "El nombre '%s' ya está siendo utilizado por otra Categoría", categoria.getNombre()));
+                // Verificar si existe
+                if (porNombre.isPresent()) {
+                    // Debido a que el nombre está en uso, verificar si los identificadores son
+                    // distintos
+                    if (!porNombre.get().getId().equals(categoria.getId())) {
+                        // Depuración
+                        logger.warn("[API] Se intentó utilizar un nombre para la Categoría que ya está en uso: {}",
+                                categoria);
+
+                        // Lanzar excepcion
+                        throw new UniqueConstraintViolationException(String.format(
+                                "El nombre %s ya está siendo utilizado por otra Categoría", categoria.getNombre()));
+                    }
                 }
 
                 // Depuración
-                logger.info("[API] Actualizando la información de la Categoría {}: {}", existente.get(), categoria);
+                logger.info("[API] Modificando la información para la Categoría {} con los valores: {}",
+                        existente.get(), categoria);
 
                 // Guardar cambios
                 categoria = repositorio.save(categoria);
@@ -214,10 +222,10 @@ public class CategoriasRestController {
             }
 
             // Depuración
-            logger.warn("[API] Se intentó editar la información de una Categoría que no existe: {}", categoria);
+            logger.warn("[API] Se intentó modificar la información de una Categoría que no existe: {}", id);
 
             // Lanzar excepción
-            throw new NoSuchElementException("No se puede editar la información de una Categoría que no existe");
+            throw new NoSuchElementException("No se puede editar la información de una categoría que no existe.");
         }
 
         // Depuración
