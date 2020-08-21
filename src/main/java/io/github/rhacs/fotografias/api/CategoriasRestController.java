@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.rhacs.fotografias.excepciones.IdentifierMismatchException;
@@ -71,6 +73,7 @@ public class CategoriasRestController {
      * @return un objeto {@link List} con la respuesta a la solicitud
      */
     @GetMapping
+    @ResponseStatus(code = HttpStatus.OK)
     public List<Categoria> obtenerTodas(HttpServletRequest request) {
         // Depuración
         depurarSolicitud(request);
@@ -94,6 +97,7 @@ public class CategoriasRestController {
      * @return un objeto {@link Categoria} con la respuesta a la solicitud
      */
     @GetMapping(path = "/{id:^[0-9]+$}")
+    @ResponseStatus(code = HttpStatus.OK)
     public Categoria obtenerUna(@PathVariable Long id, HttpServletRequest request) {
         // Depuración
         depurarSolicitud(request);
@@ -131,6 +135,7 @@ public class CategoriasRestController {
      * @return un objeto {@link Categoría} con la respuesta a la solicitud
      */
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     public Categoria agregarRegistro(@RequestBody @Valid Categoria categoria, HttpServletRequest request) {
         // Depuración
         depurarSolicitud(request);
@@ -174,6 +179,7 @@ public class CategoriasRestController {
      * @return un objeto {@link Categoria} con la respuesta a la solicitud
      */
     @PutMapping(path = "/{id:^[0-9]+$}")
+    @ResponseStatus(code = HttpStatus.OK)
     public Categoria editarRegistro(@PathVariable Long id, @RequestBody @Valid Categoria categoria,
             HttpServletRequest request) {
         // Depuración
@@ -234,6 +240,7 @@ public class CategoriasRestController {
      *                de la solicitud que le envía el cliente al servlet
      */
     @DeleteMapping(path = "/{id:^[0-9]+$}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void eliminarRegistro(@PathVariable Long id, HttpServletRequest request) {
         // Depuración
         depurarSolicitud(request);
