@@ -17,13 +17,6 @@ CREATE TABLE categorias (
 -- Secuencia
 CREATE SEQUENCE categorias_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE ORDER;
 
--- Disparador
-CREATE OR REPLACE TRIGGER categorias_trg BEFORE INSERT ON categorias FOR EACH ROW
-BEGIN
-	:new.categoria_id := categorias_seq.nextval;
-END;
-/
-
 ----------------------------------------------------------------------------------------------------
 -- Tabla: fotografias
 ----------------------------------------------------------------------------------------------------
@@ -51,10 +44,3 @@ CREATE TABLE fotografias (
 
 -- Secuencia
 CREATE SEQUENCE fotografias_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE ORDER;
-
--- Disparador
-CREATE OR REPLACE TRIGGER fotografias_trg BEFORE INSERT ON fotografias FOR EACH ROW
-BEGIN
-	:new.fotografia_id := fotografias_seq.nextval;
-END;
-/
