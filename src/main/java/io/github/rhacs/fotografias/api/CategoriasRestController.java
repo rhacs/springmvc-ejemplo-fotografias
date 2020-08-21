@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.rhacs.fotografias.excepciones.UniqueConstraintViolationException;
 import io.github.rhacs.fotografias.modelos.Categoria;
 import io.github.rhacs.fotografias.repositorios.CategoriasRepositorio;
 
@@ -130,6 +131,20 @@ public class CategoriasRestController {
     public Categoria agregarRegistro(@RequestBody @Valid Categoria categoria, HttpServletRequest request) {
         // Depuración
         depurarSolicitud(request);
+
+        // Buscar una categoría a partir del nombre ingresado
+        Optional<Categoria> aux = repositorio.findByNombre(categoria.getNombre());
+
+        // Verificar si existe
+        if (aux.isPresent()) {
+            // Depuración
+            logger.warn("[API] Se intentó crear una Categoría con un nombre que ya está siendo utilizado: {}",
+                    categoria);
+
+            // Lanzar excepción
+            throw new UniqueConstraintViolationException(
+                    "El nombre '" + categoria.getNombre() + "' ya está siendo utilizado");
+        }
 
         // Guardar registro en el repositorio
         categoria = repositorio.save(categoria);
