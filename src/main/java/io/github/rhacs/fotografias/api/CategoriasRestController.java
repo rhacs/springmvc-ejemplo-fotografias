@@ -14,10 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.rhacs.fotografias.excepciones.IdentifierMismatchException;
 import io.github.rhacs.fotografias.excepciones.UniqueConstraintViolationException;
 import io.github.rhacs.fotografias.modelos.Categoria;
 import io.github.rhacs.fotografias.repositorios.CategoriasRepositorio;
@@ -154,6 +156,70 @@ public class CategoriasRestController {
 
         // Devolver objeto
         return categoria;
+    }
+
+    // Solicitudes PUT
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Modifica la información de una {@link Categoria}
+     * 
+     * @param id        identificador numérico de la {@link Categoria}
+     * @param categoria objeto {@link Categoria} que contiene la información a
+     *                  modificar
+     * @param request   objeto {@link HttpServletRequest} que contiene la
+     *                  información de la solicitud que le envía el cliente al
+     *                  servlet
+     * @return un objeto {@link Categoria} con la respuesta a la solicitud
+     */
+    @PutMapping(path = "/{id:^[0-9]+$}")
+    public Categoria editarRegistro(@PathVariable Long id, @RequestBody @Valid Categoria categoria,
+            HttpServletRequest request) {
+        // Depuración
+        depurarSolicitud(request);
+
+        // Verificar que el identificador de la ruta sea igual al de la categoría
+        if (categoria.getId().equals(id)) {
+            // Buscar categoría por nombre
+            Optional<Categoria> existente = repositorio.findByNombre(categoria.getNombre());
+
+            // Verificar si existe
+            if (existente.isPresent()) {
+                // Verificar que no se esté usando un nombre que ya existe
+                if (!existente.get().getId().equals(categoria.getId())) {
+                    // Depuración
+                    logger.warn("[API] Se intentó usar un nombre que ya existe ({}) al modificar una Categoría ({})",
+                            existente.get(), categoria);
+
+                    // Lanzar excepción
+                    throw new UniqueConstraintViolationException(String.format(
+                            "El nombre '%s' ya está siendo utilizado por otra Categoría", categoria.getNombre()));
+                }
+
+                // Depuración
+                logger.info("[API] Actualizando la información de la Categoría {}: {}", existente.get(), categoria);
+
+                // Guardar cambios
+                categoria = repositorio.save(categoria);
+
+                // Devolver objeto
+                return categoria;
+            }
+
+            // Depuración
+            logger.warn("[API] Se intentó editar la información de una Categoría que no existe: {}", categoria);
+
+            // Lanzar excepción
+            throw new NoSuchElementException("No se puede editar la información de una Categoría que no existe");
+        }
+
+        // Depuración
+        logger.info("[API] Se intentó editar una categoría ({}) con el identificador ({}) de otra", categoria, id);
+
+        // Lanzar excepción
+        throw new IdentifierMismatchException(
+                String.format("El identificador ingresado por URL '%s' no coincide con el de la categoría '%s'", id,
+                        categoria.getId()));
     }
 
 }
