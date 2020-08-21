@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -220,6 +221,40 @@ public class CategoriasRestController {
         throw new IdentifierMismatchException(
                 String.format("El identificador ingresado por URL '%s' no coincide con el de la categoría '%s'", id,
                         categoria.getId()));
+    }
+
+    // Solicitudes DELETE
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Elimina un registro del repositorio
+     * 
+     * @param id      identificador numérico de la {@link Categoria}
+     * @param request objeto {@link HttpServletRequest} que contiene la información
+     *                de la solicitud que le envía el cliente al servlet
+     */
+    @DeleteMapping(path = "/{id:^[0-9]+$}")
+    public void eliminarRegistro(@PathVariable Long id, HttpServletRequest request) {
+        // Depuración
+        depurarSolicitud(request);
+
+        // Buscar información de la Categoría
+        Optional<Categoria> categoria = repositorio.findById(id);
+
+        // Verificar si existe
+        if (categoria.isPresent()) {
+            // Depuración
+            logger.info("[API] Se eliminó la Categoría {}", categoria.get());
+
+            // Eliminar registro
+            repositorio.delete(categoria.get());
+        } else {
+            // Depuración
+            logger.warn("[API] Se intentó eliminar una Categoría que no existe: {}", id);
+
+            // Lanzar excepción
+            throw new NoSuchElementException("No se puede eliminar una Categoría que no existe.");
+        }
     }
 
 }
