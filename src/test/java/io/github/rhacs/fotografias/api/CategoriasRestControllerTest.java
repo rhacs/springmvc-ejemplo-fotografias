@@ -176,12 +176,17 @@ class CategoriasRestControllerTest {
     @Order(value = 7)
     void editarRegistroShouldThrowConflict() throws Exception {
         mvc
+                // Simular petición PUT
                 .perform(
                         put("/api/categorias/{id}", 2)
+                        // Configurar tipo de contenido
                         .contentType(MediaType.APPLICATION_JSON)
+                        // Configurar codificación de caracteres
                         .characterEncoding("utf-8")
+                        // Configurar contenido de la solicitud
                         .content("{\"id\": 2, \"nombre\": \"Familia\"}")
                 )
+                // Esperar a que el estado de la respuesta sea HttpStatus.CONFLICT
                 .andExpect(status().isConflict());
     }
 
@@ -189,41 +194,58 @@ class CategoriasRestControllerTest {
     @Order(value = 8)
     void editarRegistroShouldSucceed() throws Exception {
         mvc
-            .perform(
-                    put("/api/categorias/{id}", id)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding("utf-8")
-                    .content("{\"id\": " + id + ", \"nombre\": \"Pruebosas\"}")
-            )
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.nombre").value("Pruebosas"));
+                // Simular petición PUT
+                .perform(
+                        put("/api/categorias/{id}", id)
+                        // Configurar tipo de contenido
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Configurar codificación de caracteres
+                        .characterEncoding("utf-8")
+                        // Configurar contenido de la solicitud
+                        .content("{\"id\": " + id + ", \"nombre\": \"Pruebosas\"}")
+                )
+                // Esperar que el estado de la respuesta sea HttpStatus.OK
+                .andExpect(status().isOk())
+                // Esperar que el tipo de contenido de la respuesta sea application/json
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                // Esperar que el objeto devuelto tenga un atributo "nombre" con el valor "Pruebosas"
+                .andExpect(jsonPath("$.nombre").value("Pruebosas"));
     }
 
     @Test
     @Order(value = 9)
     void editarRegistroShouldThrowNotFound() throws Exception {
         mvc
-            .perform(
-                    put("/api/categorias/{id}", 100)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding("utf-8")
-                    .content("{\"id\": 100, \"nombre\": \"Categoria prueba\"}")
-            )
-            .andExpect(status().isNotFound());
+                // Simular petición PUT
+                .perform(
+                        put("/api/categorias/{id}", 100)
+                        // Configurar tipo de contenido
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Configurar codificación de caracteres
+                        .characterEncoding("utf-8")
+                        // Configurar contenido de la solicitud
+                        .content("{\"id\": 100, \"nombre\": \"Categoria prueba\"}")
+                )
+                // Esperar que el estado de la respuesta sea HttpStatus.NOT_FOUND
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @Order(value = 10)
     void editarRegistroShouldThrowBadRequest() throws Exception {
         mvc
-            .perform(
-                    put("/api/categorias/{id}", 2)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding("utf-8")
-                    .content("{\"id\": 3, \"nombre\": \"error\"}")
-            )
-            .andExpect(status().isBadRequest());
+                // Simular petición PUT
+                .perform(
+                        put("/api/categorias/{id}", 2)
+                        // Configurar tipo de contenido
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Configurar codificación de caracteres
+                        .characterEncoding("utf-8")
+                        // Configurar contenido de la solicitud
+                        .content("{\"id\": 3, \"nombre\": \"error\"}")
+                )
+                // Esperar que el estado de la respuesta sea HttpStatus.BAD_REQUEST
+                .andExpect(status().isBadRequest());
     }
 
     // eliminarRegistro()
@@ -233,16 +255,20 @@ class CategoriasRestControllerTest {
     @Order(value = 11)
     void eliminarRegistroShouldSucceed() throws Exception {
         mvc
-            .perform(delete("/api/categorias/{id}", id))
-            .andExpect(status().isNoContent());
+                // Simular petición DELETE
+                .perform(delete("/api/categorias/{id}", id))
+                // Esperar que el estado de la respuesta sea HttpStatus.NO_CONTENT
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @Order(value = 12)
     void eliminarRegistroShouldThrowNotFound() throws Exception {
         mvc
-            .perform(delete("/api/categorias/{id}", 1000))
-            .andExpect(status().isNotFound());
+                // Simular petición DELETE
+                .perform(delete("/api/categorias/{id}", 1000))
+                // Esperar que el estado de la respuesta sea HttpStatus.NOT_FOUND
+                .andExpect(status().isNotFound());
     }
 
 }
