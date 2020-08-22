@@ -79,8 +79,8 @@ public class CategoriasRestController {
         // Depuración
         depurarSolicitud(request);
 
-        // Buscar todos los registros en el repositorio, ordenar los resultados por nombre
-        List<Categoria> categorias = repositorio.findAll(Sort.by("nombre"));
+        // Buscar todos los registros en el repositorio, ordenar los resultados por id
+        List<Categoria> categorias = repositorio.findAll(Sort.by("id"));
 
         // Depuración
         logger.info("[API] Listado de Categorias: {}", categorias);
