@@ -17,12 +17,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.rhacs.fotografias.Constantes;
 
 @Entity
 @Table(name = Constantes.TABLA_FOTOGRAFIAS)
+@JsonInclude(content = JsonInclude.Include.NON_EMPTY, value = JsonInclude.Include.NON_EMPTY)
 public class Fotografia {
 
     // Atributos
