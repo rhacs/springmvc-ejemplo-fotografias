@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,7 +34,7 @@ class CategoriasRestControllerTest {
 
     private MockMvc mvc;
 
-    private Long id;
+    private static Long id;
 
     @BeforeEach
     void setUp(WebApplicationContext wac) throws Exception {
