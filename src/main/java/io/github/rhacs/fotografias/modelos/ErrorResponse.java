@@ -2,6 +2,7 @@ package io.github.rhacs.fotografias.modelos;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -15,6 +16,7 @@ public class ErrorResponse {
     /**
      * Instante de tiempo en que ocurrió el error
      */
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'", shape = JsonFormat.Shape.STRING)
     private LocalDateTime timestamp;
 
     /**
