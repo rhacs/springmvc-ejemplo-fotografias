@@ -15,7 +15,7 @@ CREATE TABLE categorias (
 );
 
 -- Secuencia
-CREATE SEQUENCE categorias_seq START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE ORDER;
+CREATE SEQUENCE categorias_seq START WITH 6 INCREMENT BY 1 NOCACHE NOCYCLE ORDER;
 
 ----------------------------------------------------------------------------------------------------
 -- Tabla: fotografias
