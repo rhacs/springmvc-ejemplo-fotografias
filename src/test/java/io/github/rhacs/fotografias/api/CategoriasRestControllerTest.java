@@ -40,13 +40,13 @@ class CategoriasRestControllerTest {
                 // Esperar a que el tipo de contenido de la respuesta sea un application/json
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // Esperar a que el listado tenga un objeto con el atributo "nombre" y su valor
-                // sea "Familia"
-                .andExpect(jsonPath("$[0].nombre").value("Familia"));
+                // sea "Viajes"
+                .andExpect(jsonPath("$[0].nombre").value("Viajes"));
     }
 
     @Test
     void obtenerUnaShouldReturnAnObject() throws Exception {
-        int id = 2;
+        int id = 4;
 
         mvc
                 // Simular petición GET a la API
@@ -57,8 +57,8 @@ class CategoriasRestControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // Esperar a que la respuesta tenga un atributo "id" con el valor especificado
                 .andExpect(jsonPath("$.id").value(id))
-                // Esperar a que la respuesta tenga un atributo "nombre" con el valor "Viajes"
-                .andExpect(jsonPath("$.nombre").value("Viajes"));
+                // Esperar a que la respuesta tenga un atributo "nombre" con el valor "Paisajes"
+                .andExpect(jsonPath("$.nombre").value("Paisajes"));
     }
 
     @Test
@@ -74,6 +74,65 @@ class CategoriasRestControllerTest {
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoSuchElementException))
                 // Esperar a que el mensaje de la excepción contenga el identificador
                 .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains(Integer.toString(id))));
+    }
+
+    @Test
+    void agregarRegistroShouldPersist() throws Exception {
+        // Establecer nombre de la nueva categoría
+        String nombre = "Pruebita";
+
+        mvc
+                // Simular petición POST a la API
+                .perform(
+                        post("/api/categorias")
+                        // Establecer el tipo de contenido
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Establecer el juego de caracteres
+                        .characterEncoding("utf-8")
+                        // Establecer el contenido de la solicitud
+                        .content("{\"nombre\": \"" + nombre + "\"}")
+                )
+                // Esperar que el estado de la respuesta sea HttpStatus.CREATED
+                .andExpect(status().isCreated())
+                // Esperar a que el tipo de contenido de la respuesta sea application/json
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                // Esperar a que el objeto devuelto tenga un atributo "id"
+                .andExpect(jsonPath("$.id").exists())
+                // Esperar a que el objeto tenga un atributo "nombre" y su valor sea igual al que se le entregó
+                .andExpect(jsonPath("$.nombre").value(nombre));
+    }
+
+    @Test
+    void agregarRegistroShouldThrowConflict() throws Exception {
+        // Establecer nombre de la categoria (debe existir)
+        String nombre = "Viajes";
+
+        mvc
+                // Simular petición POST
+                .perform(
+                        post("/api/categorias")
+                        // Establecer tipo de contenido
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Establecer el juego de caracteres
+                        .characterEncoding("utf-8")
+                        // Establecer contenido
+                        .content("{\"nombre\": \"" + nombre + "\"}")
+                )
+                // Esperar que el estado de la respuesta sea HttpStatus.CONFLICT
+                .andExpect(status().isConflict())
+                // Esperar que el tipo de contenido sea application/json
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                // Esperar a que el objeto devuelto sea un error y contenga un atributo "status" con el valor "409"
+                .andExpect(jsonPath("$.error.status").value(409));
+    }
+
+    @Test
+    void agregarRegistroShouldThrowBadRequest() throws Exception {
+        mvc
+                // Simular petición POST
+                .perform(post("/api/categorias"))
+                // Esperar que el estado de la respuesta sea HttpStatus.BAD_REQUEST
+                .andExpect(status().isBadRequest());
     }
 
 }
