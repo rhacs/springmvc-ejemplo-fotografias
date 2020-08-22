@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -78,8 +79,8 @@ public class CategoriasRestController {
         // Depuración
         depurarSolicitud(request);
 
-        // Buscar todos los registros en el repositorio
-        List<Categoria> categorias = repositorio.findAll();
+        // Buscar todos los registros en el repositorio, ordenar los resultados por nombre
+        List<Categoria> categorias = repositorio.findAll(Sort.by("nombre"));
 
         // Depuración
         logger.info("[API] Listado de Categorias: {}", categorias);
@@ -206,7 +207,7 @@ public class CategoriasRestController {
 
                         // Lanzar excepcion
                         throw new UniqueConstraintViolationException(String.format(
-                                "El nombre %s ya está siendo utilizado por otra Categoría", categoria.getNombre()));
+                                "El nombre '%s' ya está siendo utilizado por otra Categoría", categoria.getNombre()));
                     }
                 }
 
