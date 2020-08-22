@@ -5,8 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +19,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.rhacs.fotografias.modelos.Categoria;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/appServlet-context.xml",
@@ -125,12 +127,11 @@ class CategoriasRestControllerTest {
                     // Obtener respuesta
                     String respuesta = handler.getResponse().getContentAsString();
 
-                    // Configurar expresión regular
-                    Pattern pattern = Pattern.compile("([0-9]+)");
-                    Matcher matcher = pattern.matcher(respuesta);
+                    // Convertir json a Categoria
+                    Categoria cat = new ObjectMapper().readValue(respuesta, Categoria.class);
 
                     // Extraer identificador
-                    id = Long.parseLong(matcher.group());
+                    id = cat.getId();
                 });
     }
 
@@ -178,13 +179,13 @@ class CategoriasRestControllerTest {
         mvc
                 // Simular petición PUT
                 .perform(
-                        put("/api/categorias/{id}", 2)
+                        put("/api/categorias/{id}", 3)
                         // Configurar tipo de contenido
                         .contentType(MediaType.APPLICATION_JSON)
                         // Configurar codificación de caracteres
                         .characterEncoding("utf-8")
                         // Configurar contenido de la solicitud
-                        .content("{\"id\": 2, \"nombre\": \"Familia\"}")
+                        .content("{\"id\": 3, \"nombre\": \"Familia\"}")
                 )
                 // Esperar a que el estado de la respuesta sea HttpStatus.CONFLICT
                 .andExpect(status().isConflict());
