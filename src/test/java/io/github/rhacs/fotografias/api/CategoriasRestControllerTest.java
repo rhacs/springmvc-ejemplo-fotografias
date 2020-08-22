@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/appServlet-context.xml",
         "file:src/main/webapp/WEB-INF/spring/root-context.xml" })
 @WebAppConfiguration
+@TestMethodOrder(value = OrderAnnotation.class)
 class CategoriasRestControllerTest {
 
     private MockMvc mvc;
@@ -38,6 +42,7 @@ class CategoriasRestControllerTest {
     // -----------------------------------------------------------------------------------------
 
     @Test
+    @Order(value = 1)
     void obtenerTodasShouldReturnAList() throws Exception {
         mvc
                 // Simular petición GET a la API
@@ -55,6 +60,7 @@ class CategoriasRestControllerTest {
     // -----------------------------------------------------------------------------------------
 
     @Test
+    @Order(value = 2)
     void obtenerUnaShouldReturnAnObject() throws Exception {
         int id = 4;
 
@@ -67,11 +73,12 @@ class CategoriasRestControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // Esperar a que la respuesta tenga un atributo "id" con el valor especificado
                 .andExpect(jsonPath("$.id").value(id))
-                // Esperar a que la respuesta tenga un atributo "nombre" con el valor "Paisajes"
-                .andExpect(jsonPath("$.nombre").value("Paisajes"));
+                // Esperar a que la respuesta tenga un atributo "nombre" con el valor "Conciertos"
+                .andExpect(jsonPath("$.nombre").value("Conciertos"));
     }
 
     @Test
+    @Order(value = 3)
     void obtenerUnaShouldReturnAnException() throws Exception {
         int id = 1000;
 
@@ -90,6 +97,7 @@ class CategoriasRestControllerTest {
     // -----------------------------------------------------------------------------------------
 
     @Test
+    @Order(value = 4)
     void agregarRegistroShouldPersist() throws Exception {
         // Establecer nombre de la nueva categoría
         String nombre = "Pruebita";
@@ -127,6 +135,7 @@ class CategoriasRestControllerTest {
     }
 
     @Test
+    @Order(value = 5)
     void agregarRegistroShouldThrowConflict() throws Exception {
         // Establecer nombre de la categoria (debe existir)
         String nombre = "Viajes";
@@ -151,6 +160,7 @@ class CategoriasRestControllerTest {
     }
 
     @Test
+    @Order(value = 6)
     void agregarRegistroShouldThrowBadRequest() throws Exception {
         mvc
                 // Simular petición POST
@@ -163,6 +173,7 @@ class CategoriasRestControllerTest {
     // -----------------------------------------------------------------------------------------
 
     @Test
+    @Order(value = 7)
     void editarRegistroShouldThrowConflict() throws Exception {
         mvc
                 .perform(
@@ -175,20 +186,22 @@ class CategoriasRestControllerTest {
     }
 
     @Test
+    @Order(value = 8)
     void editarRegistroShouldSucceed() throws Exception {
         mvc
             .perform(
-                    put("/api/categorias/{id}", 2)
+                    put("/api/categorias/{id}", id)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding("utf-8")
-                    .content("{\"id\": 2, \"nombre\": \"Viajes 2020\"}")
+                    .content("{\"id\": " + id + ", \"nombre\": \"Pruebosas\"}")
             )
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.nombre").value("Viajes 2020"));
+            .andExpect(jsonPath("$.nombre").value("Pruebosas"));
     }
 
     @Test
+    @Order(value = 9)
     void editarRegistroShouldThrowNotFound() throws Exception {
         mvc
             .perform(
@@ -201,6 +214,7 @@ class CategoriasRestControllerTest {
     }
 
     @Test
+    @Order(value = 10)
     void editarRegistroShouldThrowBadRequest() throws Exception {
         mvc
             .perform(
@@ -216,6 +230,7 @@ class CategoriasRestControllerTest {
     // -----------------------------------------------------------------------------------------
 
     @Test
+    @Order(value = 11)
     void eliminarRegistroShouldSucceed() throws Exception {
         mvc
             .perform(delete("/api/categorias/{id}", id))
@@ -223,6 +238,7 @@ class CategoriasRestControllerTest {
     }
 
     @Test
+    @Order(value = 12)
     void eliminarRegistroShouldThrowNotFound() throws Exception {
         mvc
             .perform(delete("/api/categorias/{id}", 1000))
