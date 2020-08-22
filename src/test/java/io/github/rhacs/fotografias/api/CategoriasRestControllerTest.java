@@ -30,6 +30,9 @@ class CategoriasRestControllerTest {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
+    // obtenerTodas()
+    // -----------------------------------------------------------------------------------------
+
     @Test
     void obtenerTodasShouldReturnAList() throws Exception {
         mvc
@@ -43,6 +46,9 @@ class CategoriasRestControllerTest {
                 // sea "Viajes"
                 .andExpect(jsonPath("$[0].nombre").value("Viajes"));
     }
+
+    // obtenerUna()
+    // -----------------------------------------------------------------------------------------
 
     @Test
     void obtenerUnaShouldReturnAnObject() throws Exception {
@@ -75,6 +81,9 @@ class CategoriasRestControllerTest {
                 // Esperar a que el mensaje de la excepción contenga el identificador
                 .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains(Integer.toString(id))));
     }
+
+    // agregarRegistro()
+    // -----------------------------------------------------------------------------------------
 
     @Test
     void agregarRegistroShouldPersist() throws Exception {
