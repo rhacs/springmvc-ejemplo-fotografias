@@ -2,8 +2,8 @@
 -- Tabla: categorias
 ----------------------------------------------------------------------------------------------------
 
-INSERT INTO categorias VALUES ("Viajes");
-INSERT INTO categorias VALUES ("Familia");
-INSERT INTO categorias VALUES ("Paisajes");
-INSERT INTO categorias VALUES ("Conciertos");
-INSERT INTO categorias VALUES ("Playa 2019");
+INSERT INTO categorias VALUES (1, "Viajes");
+INSERT INTO categorias VALUES (2, "Familia");
+INSERT INTO categorias VALUES (3, "Paisajes");
+INSERT INTO categorias VALUES (4, "Conciertos");
+INSERT INTO categorias VALUES (5, "Playa 2019");
