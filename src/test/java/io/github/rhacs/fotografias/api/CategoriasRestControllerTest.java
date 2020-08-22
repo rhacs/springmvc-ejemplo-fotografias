@@ -144,4 +144,57 @@ class CategoriasRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    // editarRegistro()
+    // -----------------------------------------------------------------------------------------
+
+    @Test
+    void editarRegistroShouldThrowConflict() throws Exception {
+        mvc
+                .perform(
+                        put("/api/categorias/{id}", 2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content("{\"id\": 2, \"nombre\": \"Familia\"}")
+                )
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void editarRegistroShouldSucceed() throws Exception {
+        mvc
+            .perform(
+                    put("/api/categorias/{id}", 2)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content("{\"id\": 2, \"nombre\": \"Viajes 2020\"}")
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.nombre").value("Viajes 2020"));
+    }
+
+    @Test
+    void editarRegistroShouldThrowNotFound() throws Exception {
+        mvc
+            .perform(
+                    put("/api/categorias/{id}", 100)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content("{\"id\": 100, \"nombre\": \"Categoria prueba\"}")
+            )
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void editarRegistroShouldThrowBadRequest() throws Exception {
+        mvc
+            .perform(
+                    put("/api/categorias/{id}", 2)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content("{\"id\": 3, \"nombre\": \"error\"}")
+            )
+            .andExpect(status().isBadRequest());
+    }
+
 }
