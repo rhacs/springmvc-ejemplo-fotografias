@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,8 @@ import org.springframework.web.context.WebApplicationContext;
 class CategoriasRestControllerTest {
 
     private MockMvc mvc;
+
+    private Long id;
 
     @BeforeEach
     void setUp(WebApplicationContext wac) throws Exception {
@@ -108,7 +112,18 @@ class CategoriasRestControllerTest {
                 // Esperar a que el objeto devuelto tenga un atributo "id"
                 .andExpect(jsonPath("$.id").exists())
                 // Esperar a que el objeto tenga un atributo "nombre" y su valor sea igual al que se le entregó
-                .andExpect(jsonPath("$.nombre").value(nombre));
+                .andExpect(jsonPath("$.nombre").value(nombre))
+                .andDo(handler -> {
+                    // Obtener respuesta
+                    String respuesta = handler.getResponse().getContentAsString();
+
+                    // Configurar expresión regular
+                    Pattern pattern = Pattern.compile("([0-9]+)");
+                    Matcher matcher = pattern.matcher(respuesta);
+
+                    // Extraer identificador
+                    id = Long.parseLong(matcher.group());
+                });
     }
 
     @Test
@@ -195,6 +210,23 @@ class CategoriasRestControllerTest {
                     .content("{\"id\": 3, \"nombre\": \"error\"}")
             )
             .andExpect(status().isBadRequest());
+    }
+
+    // eliminarRegistro()
+    // -----------------------------------------------------------------------------------------
+
+    @Test
+    void eliminarRegistroShouldSucceed() throws Exception {
+        mvc
+            .perform(delete("/api/categorias/{id}", id))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void eliminarRegistroShouldThrowNotFound() throws Exception {
+        mvc
+            .perform(delete("/api/categorias/{id}", 1000))
+            .andExpect(status().isNotFound());
     }
 
 }
