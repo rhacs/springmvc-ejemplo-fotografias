@@ -4,18 +4,24 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.rhacs.fotografias.excepciones.UniqueConstraintViolationException;
 import io.github.rhacs.fotografias.modelos.Fotografia;
 import io.github.rhacs.fotografias.repositorios.FotografiasRepositorio;
 
@@ -88,6 +94,39 @@ public class FotografiasRestController {
 
         // Lanzar excepción
         throw new NoSuchElementException(String.format("La Fotografía con el identificador '%s' no existe", id));
+    }
+
+    // Solicitudes POST
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Agrega una nueva {@link Fotografia} al repositorio
+     * 
+     * @param fotografia objeto {@link Fotografia} que contiene la información a
+     *                   agregar
+     * @return un objeto {@link Fotografia} con la respuesta a la solicitud
+     */
+    @PostMapping
+    public Fotografia agregarRegistro(@RequestBody @Valid Fotografia fotografia) {
+        // Buscar fotografía existente usando la url
+        Optional<Fotografia> existente = fotografiasRepositorio.findByUrl(fotografia.getUrl());
+
+        // Verificar si existe
+        if (existente.isPresent()) {
+            // Depuración
+            logger.info("[API] Se intentó agregar una Fotografía utilizando una url existente: {}",
+                    fotografia.getUrl());
+
+            // Lanzar excepción
+            throw new UniqueConstraintViolationException(
+                    String.format("La url '%s' ya está siendo utilizada por otra fotografía", fotografia.getUrl()));
+        }
+
+        // Agregar fotografia al repositorio
+        fotografia = fotografiasRepositorio.save(fotografia);
+
+        // Devolver objeto
+        return fotografia;
     }
 
 }
