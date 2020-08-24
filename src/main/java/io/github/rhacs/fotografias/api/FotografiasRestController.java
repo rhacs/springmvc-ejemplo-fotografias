@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -107,6 +108,7 @@ public class FotografiasRestController {
      * @return un objeto {@link Fotografia} con la respuesta a la solicitud
      */
     @PostMapping
+    @ResponseStatus(code = HttpStatus.OK)
     public Fotografia agregarRegistro(@RequestBody @Valid Fotografia fotografia) {
         // Buscar fotografía existente usando la url
         Optional<Fotografia> existente = fotografiasRepositorio.findByUrl(fotografia.getUrl());
@@ -127,6 +129,42 @@ public class FotografiasRestController {
 
         // Devolver objeto
         return fotografia;
+    }
+
+    // Solicitudes PUT
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Actualiza la información de una {@link Fotografia}
+     * 
+     * @param fotografia objeto {@link Fotografia} que contiene la información a
+     *                   actualizar
+     * @return un objeto {@link Fotografia} con la respuesta a la solicitud
+     */
+    @PutMapping
+    @ResponseStatus(code = HttpStatus.OK)
+    public Fotografia editarRegistro(@RequestBody @Valid Fotografia fotografia) {
+        // Buscar información de la fotografia existente
+        Optional<Fotografia> existente = fotografiasRepositorio.findById(fotografia.getId());
+
+        // Verificar si existe
+        if (existente.isPresent()) {
+            // Depuración
+            logger.info("[API] Actualizando la información de la Fotografia {} con {}", existente.get(), fotografia);
+
+            // Actualizar información
+            fotografia = fotografiasRepositorio.save(fotografia);
+
+            // Devolver objeto
+            return fotografia;
+        }
+
+        // Depuración
+        logger.warn("[API] Se intentó editar la información de una Fotografía que no existe: {}", fotografia);
+
+        // Lanzar excepción
+        throw new NoSuchElementException(
+                String.format("La Fotografía con el identificador '%s' no existe", fotografia.getId()));
     }
 
 }
