@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,7 +109,7 @@ public class FotografiasRestController {
      * @return un objeto {@link Fotografia} con la respuesta a la solicitud
      */
     @PostMapping
-    @ResponseStatus(code = HttpStatus.OK)
+    @ResponseStatus(code = HttpStatus.CREATED)
     public Fotografia agregarRegistro(@RequestBody @Valid Fotografia fotografia) {
         // Buscar fotografía existente usando la url
         Optional<Fotografia> existente = fotografiasRepositorio.findByUrl(fotografia.getUrl());
@@ -165,6 +166,36 @@ public class FotografiasRestController {
         // Lanzar excepción
         throw new NoSuchElementException(
                 String.format("La Fotografía con el identificador '%s' no existe", fotografia.getId()));
+    }
+
+    // Solicitudes DELETE
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Elimina un registro del repositorio
+     * 
+     * @param id identificador numérico de la {@link Fotografia}
+     */
+    @DeleteMapping(path = "/{id:^[0-9]+$}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void eliminarRegistro(@PathVariable Long id) {
+        // Buscar información de la Fotografía
+        Optional<Fotografia> fotografia = fotografiasRepositorio.findById(id);
+
+        // Verificar si existe
+        if (fotografia.isPresent()) {
+            // Depuración
+            logger.info("[API] Se eliminó: {}", fotografia.get());
+
+            // Eliminar registro
+            fotografiasRepositorio.delete(fotografia.get());
+        } else {
+            // Depuración
+            logger.warn("[API] Se intentó eliminar una Fotografía que no existe: {}", id);
+
+            // Lanzar excepción
+            throw new NoSuchElementException(String.format("La Fotografía con el identificador '%s' no existe", id));
+        }
     }
 
 }
