@@ -97,6 +97,12 @@ public class HomeController {
             // Agregar listado al modelo
             modelo.addAttribute("fotografias", fotografias);
 
+            // Buscar todas las categorías
+            List<Categoria> categorias = categoriasRepositorio.findAll(Sort.by("nombre"));
+
+            // Agregar listado de categorías al modelo
+            modelo.addAttribute("categorias", categorias);
+
             // Devolver vista
             return "home";
         }
