@@ -57,7 +57,9 @@
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-body">
-                                        <img alt="${function:substring(fotografia.descripcion, 0, 50)}" src="${fotografia.url}" height="350" width="100%" />
+                                        <a href="${fotografia.url}" data-fancybox="gallery">
+                                            <img alt="${function:substring(fotografia.descripcion, 0, 50)}" src="${fotografia.url}" height="350" width="100%" />
+                                        </a>
                                     </div>
                                 </div>
                             </div>
