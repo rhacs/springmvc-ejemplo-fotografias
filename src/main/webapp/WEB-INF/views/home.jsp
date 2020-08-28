@@ -54,10 +54,10 @@
                 <core:choose>
                     <core:when test="${fotografias != null && fotografias.size() > 0}">
                         <core:forEach items="${fotografias}" var="fotografia">
-                            <div class="col-md-4">
+                            <div class="col-lg-4 col-md-6 mb-4">
                                 <div class="card">
                                     <div class="card-body">
-                                        <a href="${fotografia.url}" data-fancybox="gallery">
+                                        <a href="${fotografia.url}" data-fancybox="gallery" data-caption="${fotografia.descripcion}">
                                             <img alt="${function:substring(fotografia.descripcion, 0, 50)}" src="${fotografia.url}" height="350" width="100%" />
                                         </a>
                                     </div>
@@ -77,6 +77,7 @@
         <!-- /Fotografías -->
 
         <!-- Dependencias JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous"></script>
         <!-- /Dependencias JavaScript -->
     </body>
