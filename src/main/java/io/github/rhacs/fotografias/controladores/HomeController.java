@@ -1,6 +1,7 @@
 package io.github.rhacs.fotografias.controladores;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.github.rhacs.fotografias.modelos.Categoria;
@@ -72,6 +74,35 @@ public class HomeController {
 
         // Devolver vista
         return "home";
+    }
+
+    /**
+     * Muestra el listado de {@link Fotografia}s pertenecientes a la
+     * {@link Categoria} seleccionada
+     * 
+     * @param id     identificador numérico de la {@link Categoria}
+     * @param modelo objeto {@link model} que contiene el modelo de la vista
+     * @return un objeto {@link String} que contiene el nombre de la vista
+     */
+    @GetMapping(path = "/categoria/{id:^[0-9]+$}")
+    public String filtrarPorCategoria(@PathVariable Long id, Model modelo) {
+        // Buscar información de la categoría
+        Optional<Categoria> categoria = categoriasRepositorio.findById(id);
+
+        // Verificar si existe
+        if (categoria.isPresent()) {
+            // Buscar todas las fotografías de la categoría
+            List<Fotografia> fotografias = fotografiasRepositorio.findByCategoria(categoria.get());
+
+            // Agregar listado al modelo
+            modelo.addAttribute("fotografias", fotografias);
+
+            // Devolver vista
+            return "home";
+        }
+
+        // Redireccionar
+        return "redirect:/?nid=" + id;
     }
 
 }
