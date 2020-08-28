@@ -34,7 +34,7 @@
                 <div class="col-12">
                     <core:forEach items="${categorias}" var="categoria">
                         <core:choose>
-                            <core:when test="${function:contains(pageContext.request.requestURL, categoria.getId())}">
+                            <core:when test="${function:contains(pageContext.request.requestURL, categoria.id)}">
                                 <span class="badge badge-pill badge-success">${categoria.getNombre()}</span>
                             </core:when>
 
@@ -58,7 +58,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <a href="${fotografia.url}" data-fancybox="gallery" data-caption="${fotografia.descripcion}">
-                                            <img alt="${function:substring(fotografia.descripcion, 0, 50)}" src="${fotografia.url}" height="350" width="100%" />
+                                            <img alt="${function:substring(fotografia.descripcion, 0, 50)}" src="${fotografia.url}" height="320" width="100%" />
                                         </a>
                                     </div>
                                 </div>
