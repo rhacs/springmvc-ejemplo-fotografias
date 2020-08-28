@@ -34,12 +34,12 @@
                 <div class="col-12">
                     <core:forEach items="${categorias}" var="categoria">
                         <core:choose>
-                            <core:when test="${function:contains(pageContext.request.requestURL, categoria.id)}">
-                                <span class="badge badge-pill badge-success">${categoria.getNombre()}</span>
+                            <core:when test="${function:contains(requestScope['javax.servlet.forward.request_uri'], categoria.id)}">
+                                <span class="badge badge-pill badge-success">${categoria.nombre}</span>
                             </core:when>
 
                             <core:otherwise>
-                                <a href="${pageContext.request.contextPath}/categoria/${categoria.getId()}" class="badge badge-pill badge-light">${categoria.getNombre()}</a>
+                                <a href="${pageContext.request.contextPath}/categoria/${categoria.id}" class="badge badge-pill badge-light">${categoria.nombre}</a>
                             </core:otherwise>
                         </core:choose>
                     </core:forEach>
