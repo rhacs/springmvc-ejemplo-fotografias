@@ -48,7 +48,7 @@
         <com.jayway.jsonpath-version>2.4.0</com.jayway.jsonpath-version>
 
         <!-- Apache Log4j -->
-        <org.apache.logging.log4j-version>2.16.0</org.apache.logging.log4j-version>
+        <org.apache.logging.log4j-version>2.17.0</org.apache.logging.log4j-version>
 
         <!-- JUnit Jupiter -->
         <org.junit.jupiter-version>5.6.2</org.junit.jupiter-version>
